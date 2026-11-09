@@ -1,0 +1,64 @@
+.attention-gauge {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-width: 200px;
+}
+
+.gauge-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.gauge-arc-container {
+  width: 180px;
+  height: 120px;
+}
+
+.gauge-indicators {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.indicator.on .indicator-dot { background: var(--success); }
+.indicator.off .indicator-dot { background: #cbd5e1; }
+.indicator.warn .indicator-dot { background: var(--warning); }
+.indicator.info .indicator-dot { background: var(--secondary); }
+
+.gauge-level-badge {
+  padding: 4px 16px;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.gauge-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: center;
+}

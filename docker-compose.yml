@@ -1,0 +1,66 @@
+name: focusflow
+
+services:
+  # ────────────────────────────────── MongoDB ──────────────────────────────────
+  mongo:
+    image: mongo:7.0
+    container_name: focusflow-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: focusflow
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  # ────────────────────────────────── Backend ──────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: focusflow-backend:local
+    container_name: focusflow-backend
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      # These always override .env — containers use service names, not localhost
+      MONGODB_URI: mongodb://mongo:27017
+      DB_NAME: focusflow
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ────────────────────────────────── Frontend ─────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:8000
+    image: focusflow-frontend:local
+    container_name: focusflow-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+
+volumes:
+  mongodata:
+    driver: local

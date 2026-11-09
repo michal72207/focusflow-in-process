@@ -1,0 +1,28 @@
+# Secrets – never commit
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Docker
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large model files — stored separately, not in git
+# (copy from focusflow-models/ folder manually)
+frontend/public/models/*.onnx

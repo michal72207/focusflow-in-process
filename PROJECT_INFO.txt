@@ -1,0 +1,58 @@
+FocusFlow - PROJECT_INFO
+Power Tech 2026 | Assignment 3
+
+=== פרטים כלליים ===
+project_name: FocusFlow
+authors: [email students]
+one_sentence_description: אתר למידה חכם שמודד את רמת הקשב של המשתמש דרך מצלמת הרשת ומציג ציון בזמן אמת עם שאלות אינטראקטיביות כשהקשב יורד.
+
+=== תוכן ===
+main_content_type: video (YouTube), text, web
+what_is_a_content_item: סרטון YouTube (קישור), טקסט ארוך שהמשתמש מדביק, קישור לדף אינטרנט
+sample_content_type: youtube
+sample_content_for_testing: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+interface_language: hebrew
+
+=== טכנולוגיה ===
+backend_framework: FastAPI + Uvicorn (Python 3.11)
+frontend_framework: React 18 + Vite
+database: MongoDB 7.0 (קונטיינר Docker עם volume קבוע)
+what_is_measured: קשב (attention) — ציון בין 0 ל-1, גבוה יותר = יותר ממוקד
+models_used: ONNX v4_2.onnx — GRU+Attention, רץ בדפדפן עם onnxruntime-web (WebAssembly)
+model_highlights: 3 פלטות: ציון רציף 0-1, סיווג ל-5 רמות, attention weights לכל פריים. נירמול מרחב כבר בפנים המודל.
+changes_to_recommended_api: none — API תואם לחלוטין למומלץ
+
+=== שימוש באתר ===
+how_to_register: לחץ "הרשמה" בדף הכניסה, מלא שם תצוגה/אימייל/סיסמה (8+ תווים)
+what_is_a_session: פעם אחת של צפייה/קריאה בפריט תוכן — מתחיל בלחיצת "התחל סשן לימוד" ומסתיים ב"סיים סשן"
+how_to_start_a_session: ספרייה → לחץ "פתח ולמד" על פריט → "התחל סשן לימוד" → "הפעל מצלמה" (אחרי הסכמה)
+camera_notes: הסכמה מפורשת נדרשת לפני הפעלת המצלמה. וידאו לא עוזב הדפדפן. רק נקודות פנים נשלחות.
+where_the_score_appears: בסרגל הצד בדף הצפייה — גאוג' קשת עם אחוז וסיווג מילולי
+seconds_until_first_score: ~10 שניות (100 פריימים × 10fps)
+low_focus_reaction: כשציון < 0.40 במצב אינטראקטיבי — מוצגת שאלה. קולדאון של 60 שניות בין שאלות.
+how_to_end_a_session: לחץ "סיים סשן" → עובר אוטומטית לסיכום הסשן עם גרף קשב
+
+=== הרצה ===
+run_command: docker compose up --build (מתוך תיקיית focusflow/)
+setup_notes: צריך Docker Desktop. הקובץ .env נמצא בתיקייה. GEMINI_API_KEY אופציונלי.
+
+=== אבטחה ===
+password_storage: bcrypt דרך passlib — hash מאוחסן בלבד, לא מוחזר בשום תגובה
+password_rules: מינימום 8 תווים, נאכף בשרת (422 על קצר)
+token_handling: JWT עם HS256, תוקף 60 דקות, נשמר ב-localStorage. בהתנתקות נמחק. אחרי פקיעה — 401 מחזיר להתחברות.
+access_control: Bearer token בכותרת Authorization בכל בקשה. ללא טוקן → 401.
+data_isolation: user_id נגזר מה-JWT (לא מגוף הבקשה). בקשה למשאב של אחר → 404
+input_validation: Pydantic עם EmailStr, field validators. סוג תוכן enum. ציון חייב 0-1.
+camera_and_face_data: רק נקודות פנים (float32 x,y,z × 478). אין שמירת תמונות. הסכמה נדרשת. מצלמה נעצרת עם סיום סשן.
+secrets_handling: .env (gitignored). JWT_SECRET ומשתני DB — רק דרך env vars, לא בקוד.
+extra_account_security: JWT_SECRET ב-.env, מינימום 8 תווים לסיסמה
+
+=== מצב הפרויקט ===
+works_fully: הרשמה/התחברות/התנתקות, ספריית תוכן, סשנים, מדידות, גאוג' קשב, MediaPipe, ONNX inference, היסטוריה, אנליטיקה, עדכון פרופיל, מחיקת חשבון, Docker 3 קונטיינרים
+partially_works_or_missing: שאלות Gemini דורשות GEMINI_API_KEY; web content נפתח בכרטיסייה נפרדת (iframe חסום ע"י רוב אתרים)
+known_issues: none
+
+=== הפרויקט שלנו ===
+plugin: none
+extra_features: אנליטיקה אישית עם גרף Recharts, מצב אינטראקטיבי עם שאלות, עדכון פרופיל + החלפת סיסמה + מחיקת חשבון
+what_makes_it_yours: מודל v4_2 רץ נטיבית בדפדפן עם onnxruntime-web. attention weights מוצגים. ממשק RTL מלא בעברית. 3 סוגי תוכן.
